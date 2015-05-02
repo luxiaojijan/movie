@@ -5,8 +5,8 @@ var User = require('../models/user');
 var _ = require('underscore');
 // 网站首页
 router.get('/', function(req, res) {
-  console.log('user in session');
-  console.log(req.session.user);
+  // console.log('user in session');
+  // console.log(req.session.user);
   Movie.fetch(function(err,movies){
     if(err){
       console.log(err);
@@ -52,6 +52,11 @@ router.post('/user/signin/', function (req,res){
     })
   })
 })
+
+router.get('/logout',function (req,res){
+  delete req.session.user;
+  res.redirect('/');
+});
 
 router.get('/login',function (req,res){
     res.render("/login",{title: "用户登录"});

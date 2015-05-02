@@ -7,15 +7,10 @@ var cookieParser = require('cookie-parser');//session需要cookie-parser这个�
 var mongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 var app = express();
 var dbUrl = 'mongodb://127.0.0.1:27017/test';
-
 // view engine setup
-app.set('views', path.join(__dirname,'views'));
+app.set('views', path.join(__dirname,'./app/views'));
 app.set('view engine', 'jade');
 mongoose.connect(dbUrl);
 // uncomment after placing your favicon in /public
@@ -35,8 +30,8 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+require('./config/routes')(app);
+
 app.listen(4000);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,18 +40,12 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
+//判断线上环境和开发环境是否一致,打印数据库操作日志
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
+  app.set('showStackError',true);
+  app.use(logger(':method :url :status'));
+  app.locals.pretty = true;
+  mongoose.set('debug',true);
 }
 
 // production error handler
