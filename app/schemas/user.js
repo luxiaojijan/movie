@@ -7,6 +7,10 @@ var UserSchema = new mongoose.Schema({
 		unique: true,
 		type: String
 	},
+	role:{
+		type: Number,
+		default: 0,
+	},
 	password: String,
 	meta: {
 		// 录入数据或者更新数据的时间

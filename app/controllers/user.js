@@ -11,6 +11,17 @@ exports.signup = function (req,res){
     })
 }
 
+exports.showSignin = function (req,res){
+    res.render('signin',{
+      title: '登陆界面'
+    })
+}
+exports.showSignup = function (req,res){
+    res.render('signup',{
+      title: '注册界面'
+    })
+}
+
 exports.signin = function (req,res){
   var _user = req.body.user;
   var name = _user.name;
@@ -18,7 +29,7 @@ exports.signin = function (req,res){
 
   User.findOne({name: name},function(err,user){
     if(!user){
-      res.redirect('/');
+      res.redirect('/signup');
     }
     user.comparePassword(password,function(err,isMathed){
       if(err){
@@ -29,7 +40,7 @@ exports.signin = function (req,res){
         console.log('the password is correct!');
         res.redirect('/');
       }else{
-        console.log('the password is not correct!');
+        res.redirect('/signin');
       }
     })
   })
@@ -54,4 +65,33 @@ exports.list = function (req, res) {
       users: users
     });
   });
+}
+
+exports.signinRequired = function (req, res,next) {
+  var user = req.session.user;
+  if(!user){
+    return res.redirect('/signin');
+  }
+  next();
+}
+
+exports.adminRequired = function (req, res,next) {
+  var user = req.session.user;
+  if(user.role< 10){
+    return res.redirect('/signin');
+  }
+  next();
+}
+
+exports.delete = function(req,res){
+  var id = req.query.id;
+  if(id){
+    User.remove({_id: id}, function(err,movie){
+      if(err){
+        console.log(err);
+      }else{
+        res.json({success:1});
+      }
+    })
+  }
 }
