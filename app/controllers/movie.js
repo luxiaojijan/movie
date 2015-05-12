@@ -1,18 +1,27 @@
 var Movie = require('../models/movie');
+var Comment = require('../models/comment');
 var _ = require('underscore');
 // 详情页
 exports.detail = function(req, res) {
   var id = req.params.id;
   Movie.findById(id,function (err,movie){
-      res.render('detail', { 
-        title: '网站详情页'+ movie.title,
-        movie: movie
-      });
+      Comment
+      .find({movie:id})
+      .populate('from','name')
+      .populate('reply.from reply.to','name')
+      .exec(function(err,comments){
+        console.log(comments);
+        res.render('detail', {
+          title: '网站详情页'+ movie.title,
+          movie: movie,
+          comments: comments
+          });
+        })
   })
 }
 
 exports.new = function(req, res) {
-  res.render('admin', { 
+  res.render('admin', {
     title: '网站后台录入页',
     movie:{
       title: '',
@@ -54,7 +63,7 @@ exports.save = function (req,res){
           year: movieObj.year,
           poster: movieObj.poster,
           summary: movieObj.summary,
-          flash: movieObj.flash,
+          flash: movieObj.flash
         });
 
         _movie.save(function (err,movie){
@@ -84,7 +93,7 @@ exports.list = function (req, res) {
     if(err){
       console.log(err);
     }
-    res.render('list', { 
+    res.render('list', {
       title: '列表页',
       movies: movies
     });
