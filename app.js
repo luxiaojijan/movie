@@ -8,7 +8,7 @@ var mongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var app = express();
-var dbUrl = 'mongodb://127.0.0.1:27017/test1';
+var dbUrl = 'mongodb://127.0.0.1:27017/test3';
 // view engine setup
 app.set('views', path.join(__dirname,'./app/views'));
 app.set('view engine', 'jade');

@@ -2,6 +2,7 @@ var Index = require('../app/controllers/index');
 var Movie = require('../app/controllers/movie');
 var User = require('../app/controllers/user');
 var Comment = require('../app/controllers/comment');
+var Catetory = require('../app/controllers/catetory');
 
 module.exports = function (app){
   app.use(function(req,res,next){
@@ -9,7 +10,7 @@ module.exports = function (app){
     app.locals.user = _user;
     return next();
   })
-  
+
   //Index
   app.get('/',Index.index);
 
@@ -32,4 +33,9 @@ module.exports = function (app){
 
   //comment
   app.post('/user/comment',User.signinRequired,Comment.save);
+
+  //Catetory
+  app.get('/admin/catetory/new',User.signinRequired,User.adminRequired,Catetory.new);
+  app.post('/admin/catetory',User.signinRequired,User.adminRequired,Catetory.save);
+  app.get('/admin/catetory/list',User.signinRequired,User.adminRequired,Catetory.list);
 }
