@@ -3,11 +3,11 @@ block content
   .container
     .row
       each cat in catetories
-        .panel.panel-primary
+        .panel.panel-default
           .panel-heading
             h3 #{cat.name}
           .panel-body
-            if cat.movies && cat.movies.length>0
+            if cat.movies && cat.movies.length > 0
               each item in cat.movies
                 .col-md-2
                   .thumbnail
@@ -15,6 +15,4 @@ block content
                       img(src="#{item.poster}",alt="#{item.title}")
                     .caption
                       h3 #{item.title}
-                      p: a.btn.btn-primary(href="/movie/#{item._id}",role="button")
-                  观看预告片
-
+                      p: a.btn.btn-primary(href="/movie/#{item._id}",role="button") 观看预告片

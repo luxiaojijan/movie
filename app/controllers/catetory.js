@@ -1,15 +1,16 @@
 /**
  * Created by luhuijian on 15/5/19.
  */
-var Catetory = require('../models/catetory');
-var _ = require('underscore');
+
+var mongoose = require('mongoose')
+var Catetory = mongoose.model('Catetory');
 
 exports.new = function(req, res) {
   res.render('catetory_admin', {
     title: '网站后台的分类录入页',
     catetory: {}
   });
-}
+};
 
 exports.save = function (req,res){
   var _catetory = req.body.catetory;
@@ -21,7 +22,7 @@ exports.save = function (req,res){
       }
       res.redirect('/admin/catetory/list')
     });
-  }
+  };
 
 exports.list = function (req, res) {
   Catetory.fetch(function (err,catetories){
@@ -33,4 +34,4 @@ exports.list = function (req, res) {
       catetories: catetories
     });
   });
-}
+};

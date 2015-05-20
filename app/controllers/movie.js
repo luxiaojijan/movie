@@ -1,4 +1,5 @@
 var Movie = require('../models/movie');
+var Catetory = require('../models/catetory');
 var Comment = require('../models/comment');
 var _ = require('underscore');
 // 详情页
@@ -21,27 +22,21 @@ exports.detail = function(req, res) {
 }
 
 exports.new = function(req, res) {
-  res.render('admin', {
-    title: '网站后台录入页',
-    movie:{
-      title: '',
-      doctor: '',
-      country: '',
-      language: '',
-      poster: '',
-      flash:'',
-      year: '',
-      summary: ''
-    }
+  Catetory.find({},function(err,catetories){
+    res.render('admin', {
+      title: '网站后台录入页',
+      catetories: catetories,
+      movie:{}
+    });
   });
-}
+};
 
 exports.save = function (req,res){
   var id = req.body.movie._id;
   var movieObj = req.body.movie;
   var _movie;
 
-  if(id !== 'undefined'){
+  if(id){
     Movie.findById(id, function (err,movie){
       if(err){
         console.log(err);
@@ -55,22 +50,21 @@ exports.save = function (req,res){
       })
     })
   }else{
-        _movie= new Movie({
-          doctor: movieObj.doctor,
-          title: movieObj.title,
-          country: movieObj.country,
-          language: movieObj.language,
-          year: movieObj.year,
-          poster: movieObj.poster,
-          summary: movieObj.summary,
-          flash: movieObj.flash
-        });
+        _movie= new Movie(movieObj);
+        var catetoryId = _movie.catetory;
 
         _movie.save(function (err,movie){
           if(err){
             console.log(err);
           }
-          res.redirect('/movie/' + _movie.id)
+          if(catetoryId){
+            Catetory.findById(catetoryId,function(err,catetory){
+              catetory.movies.push(movie._id);
+              catetory.save(function(err,catetory){
+                res.redirect('/movie/' + _movie.id);
+              })
+            })
+          }
         });
       }
 }
@@ -80,9 +74,12 @@ exports.update = function (req,res){
 
   if(id){
     Movie.findById(id,function (err,movie){
-      res.render('admin',{
-        title: '后台更新页面',
-        movie: movie
+      Catetory.find({},function(err,catetories){
+        res.render('admin',{
+          title: '后台更新页面',
+          movie: movie,
+          catetories: catetories
+        });
       });
     });
   }
